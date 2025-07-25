@@ -26,7 +26,7 @@ def retrieveLikedSongs():
     limit = 50
 
     while True:
-        print(f"Grabbing song from song #{offset}")
+        print(f"Song #{offset}")
         results = sp.current_user_saved_tracks(limit=limit, offset=offset)
         items = results.get("items", [])
         if not items:
@@ -41,14 +41,12 @@ def retrieveLikedSongs():
                     "images": track["album"]["images"],
                     "name": track["album"]["name"],
                     "release_date": track["album"]["release_date"],
-                    "artists": track["album"]["artists"],
+                    "artists": [artist["name"] for artist in track["album"]["artists"]],
                 },
                 "artists": [artist["name"] for artist in track["artists"]],
                 "name": track["name"],
                 "duration": track["duration_ms"],
                 "explicit": track["explicit"],
-                "id": track["id"],
-                "spotify_url": track["external_urls"]["spotify"]
             }
             all_songs.append(cleaned)
         offset += limit
