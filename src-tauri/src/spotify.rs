@@ -1,9 +1,13 @@
 use dotenvy::from_path;
-use rspotify::{model::Market, prelude::*, scopes, AuthCodeSpotify, Credentials, OAuth};
+use rspotify::{
+    model::{Market, SavedTrack},
+    prelude::*,
+    scopes, AuthCodeSpotify, Credentials, OAuth,
+};
 use serde_json::json;
 use std::{fs, io, path::PathBuf};
+use tauri::Emitter;
 
-#[tokio::main]
 async fn get_spotify() -> AuthCodeSpotify {
     let env_path = PathBuf::from("../../Mars-Player-dl-Logic/.env");
     from_path(env_path).ok();
@@ -16,10 +20,9 @@ async fn get_spotify() -> AuthCodeSpotify {
     );
     let oauth = OAuth::from_env(scopes).unwrap(); // Applys scopes and looks for redirect url
 
-    let path: PathBuf = ["..", "..", "Mars-Player-dl-Logic", "token.json"]
-        .iter()
-        .collect();
+    let mut path = PathBuf::from("../../Mars-Player-dl-Logic/");
     fs::create_dir_all(&path).unwrap(); // Creates director if it doesn't exist
+    path.push("token.json");
 
     let config = rspotify::Config {
         token_cached: true,
@@ -39,19 +42,53 @@ async fn get_spotify() -> AuthCodeSpotify {
 
 #[tokio::main]
 #[tauri::command]
-pub async fn pull_songs() {
-    let spotify: AuthCodeSpotify = get_spotify();
-    let liked_songs = spotify
-        .current_user_saved_tracks_manual(Some(Market::FromToken), Some(10), Some(0))
-        .unwrap();
+pub async fn pull_songs(app: tauri::AppHandle) {
+    tauri::async_runtime::spawn(async move {
+        let spotify = get_spotify().await;
 
-    let json_data = json!(liked_songs);
+        let mut liked_songs: Vec<SavedTrack> = Vec::new();
+        let mut offset = 0;
+        let limit = 50;
+        let mut page_count = 0;
 
-    let mut path: PathBuf = ["..", "data"].iter().collect();
-    fs::create_dir_all(&path).unwrap();
-    path.push("liked_songs.json");
+        loop {
+            match spotify.current_user_saved_tracks_manual(
+                Some(Market::FromToken),
+                Some(limit),
+                Some(offset),
+            ) {
+                Ok(page) => {
+                    liked_songs.extend(page.items);
+                    offset += limit;
+                    page_count += 1;
 
-    let file = fs::File::create(&path).unwrap();
-    let writer = io::BufWriter::new(file);
-    serde_json::to_writer_pretty(writer, &json_data).expect_err("Failed to write");
+                    // Emit progress to frontend
+                    let _ = app.emit("fetch-progress", page_count * limit);
+
+                    if page.next.is_none() {
+                        break;
+                    }
+                }
+                Err(err) => {
+                    eprintln!("Error: {}", err);
+                    break;
+                }
+            }
+        }
+
+        let json_data = json!(liked_songs);
+
+        // let mut path = PathBuf::from("../data/");
+        let mut path = PathBuf::from("../../Mars-Player-dl-Logic/data/");
+        fs::create_dir_all(&path).unwrap();
+        path.push("liked_songs.json");
+
+        // Writting stuff
+        let file = fs::File::create(&path).unwrap();
+        let writer = io::BufWriter::new(file);
+        serde_json::to_writer_pretty(writer, &json_data).expect("Written to json file!");
+
+        // Emit completion event
+        let _ = app.emit("fetch-complete", liked_songs.len());
+    });
 }

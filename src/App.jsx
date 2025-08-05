@@ -1,40 +1,40 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useState, useEffect } from "react";
+import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [progress, setProgress] = useState(null);
+  const [doneCount, setDoneCount] = useState(null);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  useEffect(() => {
+    // ✅ Listen for progress updates
+    const unlistenProgress = listen("fetch-progress", (event) => {
+      console.log(`Fetched ${event.payload} songs so far`);
+      setProgress(event.payload);
+    });
 
-  async function authenticate() {
+    const unlistenComplete = listen("fetch-complete", (event) => {
+      console.log(`Done! Total fetched: ${event.payload}`);
+      setDoneCount(event.payload);
+    });
+
+    // Cleanup function
+    return () => {
+      unlistenProgress.then((f) => f());
+      unlistenComplete.then((f) => f());
+    };
+  }, []);
+
+  async function pull_songs() {
     invoke("pull_songs");
   }
 
   return (
     <main className="container">
-      <button type="button" onClick={authenticate}>text</button>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+      <button type="button" onClick={pull_songs}>Pull Songs</button>
+      {progress !== null && <p>Progress: {progress} songs</p>}
+      {doneCount !== null && <p>Finished! Total: {doneCount}</p>}
     </main>
   );
 }
