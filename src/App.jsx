@@ -8,7 +8,6 @@ function App() {
   const [doneCount, setDoneCount] = useState(null);
 
   useEffect(() => {
-    // ✅ Listen for progress updates
     const unlistenProgress = listen("fetch-progress", (event) => {
       console.log(`Fetched ${event.payload} songs so far`);
       setProgress(event.payload);

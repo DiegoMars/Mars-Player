@@ -1,0 +1,93 @@
+:root {
+   /* Realtime Colors */
+  --text: #eee8e8;
+  --background: #0b0808;
+  --primary: #cf0a0a;
+  --secondary: #46555f;
+  --accent: #9788a8;
+
+  --text-50: #f4f0f0;
+  --text-100: #e9e2e2;
+  --text-200: #d4c4c4;
+  --text-300: #bea7a7;
+  --text-400: #a88a8a;
+  --text-500: #936c6c;
+  --text-600: #755757;
+  --text-700: #584141;
+  --text-800: #3b2b2b;
+  --text-900: #1d1616;
+  --text-950: #0f0b0b;
+
+  --background-50: #f4f0f0;
+  --background-100: #eae1e1;
+  --background-200: #d4c4c4;
+  --background-300: #bfa6a6;
+  --background-400: #a98989;
+  --background-500: #946b6b;
+  --background-600: #765656;
+  --background-700: #594040;
+  --background-800: #3b2b2b;
+  --background-900: #1e1515;
+  --background-950: #0f0b0b;
+
+  --primary-50: #fee7e7;
+  --primary-100: #fdcece;
+  --primary-200: #fa9e9e;
+  --primary-300: #f86d6d;
+  --primary-400: #f63c3c;
+  --primary-500: #f40b0b;
+  --primary-600: #c30909;
+  --primary-700: #920707;
+  --primary-800: #610505;
+  --primary-900: #310202;
+  --primary-950: #180101;
+
+  --secondary-50: #f0f3f4;
+  --secondary-100: #e2e6e9;
+  --secondary-200: #c4ced4;
+  --secondary-300: #a7b5be;
+  --secondary-400: #8a9ca8;
+  --secondary-500: #6c8393;
+  --secondary-600: #576975;
+  --secondary-700: #414f58;
+  --secondary-800: #2b353b;
+  --secondary-900: #161a1d;
+  --secondary-950: #0b0d0f;
+
+  --accent-50: #f2f0f4;
+  --accent-100: #e5e1ea;
+  --accent-200: #cbc4d4;
+  --accent-300: #b2a6bf;
+  --accent-400: #9889a9;
+  --accent-500: #7e6b94;
+  --accent-600: #655676;
+  --accent-700: #4c4059;
+  --accent-800: #322b3b;
+  --accent-900: #19151e;
+  --accent-950: #0d0b0f;
+}
+
+/* More Realtime Color Stuff */
+body {
+  font-family: 'Sometype Mono', 'Times New Roman', 'Arial';
+  font-weight: 400;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Sometype Mono', 'Times New Roman', 'Arial';
+  font-weight: 700;
+}
+
+html {font-size: 100%;} /* 16px */
+
+h1 {font-size: 4.210rem; /* 67.36px */}
+
+h2 {font-size: 3.158rem; /* 50.56px */}
+
+h3 {font-size: 2.369rem; /* 37.92px */}
+
+h4 {font-size: 1.777rem; /* 28.48px */}
+
+h5 {font-size: 1.333rem; /* 21.28px */}
+
+small {font-size: 0.750rem; /* 12px */}
