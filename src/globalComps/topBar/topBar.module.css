@@ -1,0 +1,28 @@
+.topBar {
+  padding: 1rem;
+}
+
+.arrows {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.arrows button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  padding: 0;
+  background-color: var(--background);
+}
+
+.arrows button:disabled svg {
+  fill: var(--primary-800);
+}
+
+.arrows svg {
+  width: 100%;
+  fill: var(--primary);
+  transition: 0.3s;
+}
