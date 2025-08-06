@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Monda:700|Monda:400');
+
 :root {
    /* Realtime Colors */
   --text: #eee8e8;
@@ -69,12 +71,12 @@
 
 /* More Realtime Color Stuff */
 body {
-  font-family: 'Sometype Mono', 'Times New Roman', 'Arial';
+  font-family: 'Monda', 'Times New Roman', 'Arial';
   font-weight: 400;
 }
 
 h1, h2, h3, h4, h5 {
-  font-family: 'Sometype Mono', 'Times New Roman', 'Arial';
+  font-family: 'Monda', 'Times New Roman', 'Arial';
   font-weight: 700;
 }
 
