@@ -1,46 +1,21 @@
-use dotenvy::from_path;
+use crate::spotify::auth::get_spotify;
+use chrono::{DateTime, Utc};
 use rspotify::{
     model::{Market, SavedTrack},
     prelude::*,
-    scopes, AuthCodeSpotify, Credentials, OAuth,
 };
-use serde_json::json;
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 use std::{fs, io, path::PathBuf};
 use tauri::Emitter;
 
-async fn get_spotify() -> AuthCodeSpotify {
-    let env_path = PathBuf::from("../../Mars-Player-dl-Logic/.env");
-    from_path(env_path).ok();
-
-    let creds = Credentials::from_env().unwrap(); // Grabs ID and secret
-
-    let scopes = scopes!(
-        "user-library-read",
-        "playlist-read-private" // Not using this here
-    );
-    let oauth = OAuth::from_env(scopes).unwrap(); // Applys scopes and looks for redirect url
-
-    let mut path = PathBuf::from("../../Mars-Player-dl-Logic/");
-    fs::create_dir_all(&path).unwrap(); // Creates director if it doesn't exist
-    path.push("token.json");
-
-    let config = rspotify::Config {
-        token_cached: true,
-        token_refreshing: true,
-        cache_path: path,
-        ..Default::default()
-    };
-
-    let spotify = AuthCodeSpotify::with_config(creds, oauth, config);
-
-    let url = spotify.get_authorize_url(false).unwrap(); // Grabs redirect url
-    spotify.prompt_for_token(&url).unwrap(); // Starts authentication, should hanle the token
-                                             // stuff too.
-
-    return spotify;
+#[derive(Serialize, Deserialize)]
+struct LikedSongsExport {
+    fetched_at: String,
+    song_number: u32,
+    songs: Vec<SavedTrack>,
 }
 
-#[tokio::main]
 #[tauri::command]
 pub async fn pull_songs(app: tauri::AppHandle) {
     tauri::async_runtime::spawn(async move {
@@ -75,8 +50,17 @@ pub async fn pull_songs(app: tauri::AppHandle) {
                 }
             }
         }
+        // Get the current time in UTC
+        let now: DateTime<Utc> = Utc::now();
+        // Formats like this: 2025-08-07T12:01:00Z, which is like spotify
+        let iso_8601_z_suffix = format!("{}", now.format("%+"));
+        let export = LikedSongsExport {
+            fetched_at: iso_8601_z_suffix,
+            song_number: (liked_songs.len() as u32),
+            songs: liked_songs.clone(),
+        };
 
-        let json_data = json!(liked_songs);
+        let json_data = json!(export);
 
         // let mut path = PathBuf::from("../data/");
         let mut path = PathBuf::from("../../Mars-Player-dl-Logic/data/");
@@ -89,6 +73,25 @@ pub async fn pull_songs(app: tauri::AppHandle) {
         serde_json::to_writer_pretty(writer, &json_data).expect("Written to json file!");
 
         // Emit completion event
-        let _ = app.emit("fetch-complete", liked_songs.len());
+        let _ = app.emit("fetch-complete", &liked_songs.len());
     });
+}
+
+#[tauri::command]
+pub async fn song_count(app: tauri::AppHandle) -> u32 {
+    let mut path = PathBuf::from("../../Mars-Player-dl-Logic/data/liked_songs.json");
+
+    if !path.exists() {
+        pull_songs(app).await;
+        path = PathBuf::from("../../Mars-Player-dl-Logic/data/liked_songs.json");
+    }
+
+    let json_data = fs::read_to_string(path).expect("Failed to read"); // Replace with your file path
+    let parsed_json: Value = serde_json::from_str(&json_data).expect("Failed to parse");
+    let number: u32 = match parsed_json["song_number"].as_u64() {
+        Some(val) => val as u32,
+        None => 0,
+    };
+
+    number
 }
