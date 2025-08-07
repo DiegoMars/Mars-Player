@@ -4,7 +4,7 @@
   width: 25%;
   padding: 20% 1.5rem 1rem 1.5rem;
   color: var(--text);
-  background-image: linear-gradient(var(--primary), var(--background));
+  background-image: linear-gradient(var(--primary-800), var(--background));
   border-radius: 0 2rem 0 0;
 }
 
