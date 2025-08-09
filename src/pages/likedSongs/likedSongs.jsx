@@ -16,6 +16,7 @@ function LikedSongs() {
 
     const unlistenComplete = listen("fetch-complete", (event) => {
       setDoneCount(event.payload);
+      setSongCount(event.payload);
     });
 
     // Cleanup function
@@ -27,9 +28,6 @@ function LikedSongs() {
 
   async function pull_songs() {
     invoke("pull_songs");
-    invoke("song_count").then((count) =>{
-      setSongCount(count);
-    });
   }
 
   window.onload = function() {
