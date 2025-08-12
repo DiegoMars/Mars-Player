@@ -95,3 +95,22 @@ pub async fn song_count(app: tauri::AppHandle) -> u32 {
 
     number
 }
+
+pub async fn load_songs(app: tauri::AppHandle) -> Vec<SavedTrack> {
+    let mut path = PathBuf::from("../../Mars-Player-dl-Logic/data/liked_songs.json");
+
+    if !path.exists() {
+        pull_songs(app).await;
+        path = PathBuf::from("../../Mars-Player-dl-Logic/data/liked_songs.json");
+    }
+
+    let data = fs::read_to_string(path).unwrap();
+    let export: LikedSongsExport = serde_json::from_str(&data).unwrap();
+    export.songs
+}
+
+#[tauri::command(rename_all = "snake_case")]
+pub async fn songs_page(app: tauri::AppHandle, offset: usize, limit: usize) -> Vec<SavedTrack> {
+    let songs = load_songs(app).await;
+    songs.into_iter().skip(offset).take(limit).collect()
+}

@@ -7,6 +7,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             spotify::tracks::liked_songs::pull_songs,
             spotify::tracks::liked_songs::song_count,
+            spotify::tracks::liked_songs::songs_page,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

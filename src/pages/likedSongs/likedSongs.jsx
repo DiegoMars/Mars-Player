@@ -7,6 +7,8 @@ function LikedSongs() {
   const [progress, setProgress] = useState(null);
   const [doneCount, setDoneCount] = useState(null);
   const [songCount, setSongCount] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [pages, setPages] = useState([]);
 
   useEffect(() => {
     const unlistenProgress = listen("fetch-progress", (event) => {
@@ -26,16 +28,22 @@ function LikedSongs() {
     };
   }, []);
 
+
+  useEffect(() => {
+    async function fetchSongs() {
+      const count = await invoke("song_count");
+      setSongCount(count);
+
+      const data = await invoke("songs_page", { offset: offset, limit: 50 });
+      setPages(data);
+    }
+
+    fetchSongs();
+  }, [offset]);
+
   async function pull_songs() {
     invoke("pull_songs");
   }
-
-  window.onload = function() {
-    console.log("Page and all resources have loaded!");
-    invoke("song_count").then((count) =>{
-      setSongCount(count);
-    });
-  };
 
   return (
     <section className={styles.likedSongs}>
@@ -50,6 +58,13 @@ function LikedSongs() {
         {doneCount !== null && <p className={styles.done}>Finished! Total: {doneCount}</p>}
       </div>
       <h5>{songCount} liked songs</h5>
+      <div className={styles.listOfSongs}>
+        {pages.map((Song, idx) => (
+          <div className={styles.song} key={idx}>
+            <p>{Song.name}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
