@@ -9,7 +9,9 @@ function RootLayout() {
       <TopBar />
       <div className={styles.stack}>
         <Directory className={styles.directory} />
-        <Outlet />
+        <div className={styles.content}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );
