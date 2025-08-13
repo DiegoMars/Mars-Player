@@ -45,6 +45,8 @@ function LikedSongs() {
     invoke("pull_songs");
   }
 
+  console.log(pages);
+
   return (
     <section className={styles.likedSongs}>
       <div className={styles.header}>
@@ -61,7 +63,8 @@ function LikedSongs() {
       <div className={styles.listOfSongs}>
         {pages.map((Song, idx) => (
           <div className={styles.song} key={idx}>
-            <p>{Song.name}</p>
+            <img src={Song.track.album.images[2].url} height={Song.track.album.images[2].height} width={Song.track.album.images[2].width} />
+            <p>{Song.track.name}</p>
           </div>
         ))}
       </div>
