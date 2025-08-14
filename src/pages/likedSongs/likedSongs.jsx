@@ -10,7 +10,7 @@ function LikedSongs() {
   const [offset, setOffset] = useState(0);
   const [pages, setPages] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => { // Json refresh
     const unlistenProgress = listen("fetch-progress", (event) => {
       setProgress(event.payload);
       setDoneCount(null);
@@ -18,7 +18,7 @@ function LikedSongs() {
 
     const unlistenComplete = listen("fetch-complete", (event) => {
       setDoneCount(event.payload);
-      setSongCount(event.payload);
+      grabPage()
     });
 
     // Cleanup function
@@ -29,23 +29,27 @@ function LikedSongs() {
   }, []);
 
 
-  useEffect(() => {
-    async function fetchSongs() {
-      const count = await invoke("song_count");
-      setSongCount(count);
-
-      const data = await invoke("songs_page", { offset: offset, limit: 50 });
-      setPages(data);
-    }
-
-    fetchSongs();
+  useEffect(() => { // Loads when the page loads, and when offset changes
+    grabPage();
   }, [offset]);
 
-  async function pull_songs() {
+  async function grabPage() { // grabs a limit set of songs from json file
+    const count = await invoke("song_count");
+    setSongCount(count);
+
+    const data = await invoke("songs_page", { offset: offset, limit: 50 });
+    setPages(data);
+    console.log(pages);
+  }
+
+  async function pull_songs() { // Grabs all songs into a json file
     invoke("pull_songs");
   }
 
-  console.log(pages);
+  function convertMS(ms) {
+    const result = `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
+    return result;
+  }
 
   return (
     <section className={styles.likedSongs}>
@@ -60,14 +64,40 @@ function LikedSongs() {
         {doneCount !== null && <p className={styles.done}>Finished! Total: {doneCount}</p>}
       </div>
       <h5>{songCount} liked songs</h5>
-      <div className={styles.listOfSongs}>
-        {pages.map((Song, idx) => (
-          <div className={styles.song} key={idx}>
-            <img src={Song.track.album.images[2].url} height={Song.track.album.images[2].height} width={Song.track.album.images[2].width} />
-            <p>{Song.track.name}</p>
-          </div>
-        ))}
-      </div>
+      <table className={styles.listOfSongs}>
+        <tbody>
+          <tr>
+            <th>#</th>
+            <th className={styles.titleH}>Title</th>
+            <th className={styles.albumH}>Album</th>
+            <th className={styles.dateH}>Date Added</th>
+            <th className={styles.lengthH}>Length</th>
+          </tr>
+          {pages.map((Song, idx) => (
+            <tr className={styles.song} key={idx}>
+              <td className={styles.num}>{idx + 1}</td>
+              <td>
+                <div className={styles.title}>
+                  <img src={Song.track.album.images[2].url} height={Song.track.album.images[2].height} width={Song.track.album.images[2].width} />
+                  <div className={styles.names}>
+                    <b>{Song.track.name}</b>
+                    <p>{Song.track.artists.map(artist => artist.name).join(", ")}</p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <p>{Song.track.album.name}</p>
+              </td>
+              <td>
+                <p>{new Date(Song.added_at).toLocaleString("en-US", { month: "short", day: "2-digit", year: "numeric"} )}</p>
+              </td>
+              <td>
+                <p>{convertMS(Song.track.duration_ms)}</p>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 }

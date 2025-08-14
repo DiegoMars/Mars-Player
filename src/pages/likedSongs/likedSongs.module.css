@@ -41,6 +41,33 @@
   animation: spin 1s linear infinite;
 }
 
-.song {
- background-color: var(--primary);
+/* CSS for table */
+.listOfSongs {
+  width: 100%;
+}
+
+.titleH, .albumH, .dateH, .lengthH {
+  text-align: left;
+}
+
+.titleH {
+}
+
+.num {
+  text-align: center;
+}
+
+.title {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+
+.names p {
+  margin: 0;
 }

@@ -6,7 +6,9 @@ import styles from "./rootLayout.module.css"
 function RootLayout() {
   return (
     <div className={styles.appLayout}>
-      <TopBar />
+      <div className={styles.topBar}>
+        <TopBar />
+      </div>
       <div className={styles.stack}>
         <Directory className={styles.directory} />
         <div className={styles.content}>
