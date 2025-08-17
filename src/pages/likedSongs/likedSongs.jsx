@@ -51,6 +51,7 @@ function LikedSongs() {
     return result;
   }
 
+    console.log(pages);
   return (
     <section className={styles.likedSongs}>
       <div className={styles.header}>
@@ -63,7 +64,7 @@ function LikedSongs() {
         {progress !== null && doneCount === null && <p className={styles.progress}>Progress: {progress} songs</p>}
         {doneCount !== null && <p className={styles.done}>Finished! Total: {doneCount}</p>}
       </div>
-      <h5>{songCount} liked songs</h5>
+      <h5>{songCount.toLocaleString('en-US')} liked songs</h5>
       <table className={styles.listOfSongs}>
         <tbody>
           <tr>
@@ -81,12 +82,19 @@ function LikedSongs() {
                   <img src={Song.track.album.images[2].url} height={Song.track.album.images[2].height} width={Song.track.album.images[2].width} />
                   <div className={styles.names}>
                     <b>{Song.track.name}</b>
-                    <p>{Song.track.artists.map(artist => artist.name).join(", ")}</p>
+                    <div className={styles.artists}>
+                      {Song.track.artists.map((artist,idx) => (
+                        <a key={idx} href={artist.external_urls.spotify}>
+                          {artist.name}
+                          {idx < Song.track.artists.length - 1 && ", "}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </td>
               <td>
-                <p>{Song.track.album.name}</p>
+                <a href={Song.track.album.external_urls.spotify}>{Song.track.album.name}</a>
               </td>
               <td>
                 <p>{new Date(Song.added_at).toLocaleString("en-US", { month: "short", day: "2-digit", year: "numeric"} )}</p>
