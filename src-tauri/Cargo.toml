@@ -25,3 +25,10 @@ serde_json = "1"
 rspotify = { version="0.15", features = ["client-ureq", "ureq-rustls-tls", "cli"], default-features = false }
 dotenvy = "0.15"
 chrono = "0.4"
+dl_logic = { path="../../Mars-Player-dl-Logic/dl_logic/", optional = true}
+
+[features]
+default = []              # default
+dl_logic = ["dep:dl_logic"]
+# Use #[cfg(feature = "dl_logic")] and #[cfg(not(feature = "dl_logic"))]
+# detect what to use when making functions

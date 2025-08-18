@@ -1,3 +1,4 @@
+mod sourcing;
 mod spotify;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

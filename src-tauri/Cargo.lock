@@ -779,6 +779,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "dl_logic"
+version = "0.1.0"
+
+[[package]]
 name = "dlopen2"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3798,6 +3802,7 @@ name = "tauri-app"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "dl_logic",
  "dotenvy",
  "rspotify",
  "serde",
