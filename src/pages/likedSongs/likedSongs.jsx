@@ -11,12 +11,12 @@ function LikedSongs() {
   const [pages, setPages] = useState([]);
 
   useEffect(() => { // Json refresh
-    const unlistenProgress = listen("fetch-progress", (event) => {
+    const unlistenProgress = listen("likedSongs-fetch-progress", (event) => {
       setProgress(event.payload);
       setDoneCount(null);
     });
 
-    const unlistenComplete = listen("fetch-complete", (event) => {
+    const unlistenComplete = listen("likedSongs-fetch-complete", (event) => {
       setDoneCount(event.payload);
       grabPage()
     });

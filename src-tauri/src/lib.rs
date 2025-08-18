@@ -8,6 +8,9 @@ pub fn run() {
             spotify::tracks::liked_songs::pull_songs,
             spotify::tracks::liked_songs::song_count,
             spotify::tracks::liked_songs::songs_page,
+            spotify::tracks::user_playlists::pull_playlists,
+            spotify::tracks::user_playlists::playlist_count,
+            spotify::tracks::user_playlists::playlist_page,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

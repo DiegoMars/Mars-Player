@@ -1,0 +1,88 @@
+.playLists {
+  padding: 0 2rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.button {
+  background-color: var(--background);
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 5px;
+}
+
+.button svg {
+  width: 1.5rem;
+  fill: var(--primary);
+}
+
+.progress, .done {
+  margin: auto 0;
+  padding-top: 5px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+  justify-content: center;
+}
+
+.playlist {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 0.25rem;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.playlist img {
+  object-fit: cover;
+  opacity: 1;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.description {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%)
+}
+
+.playlist:hover img {
+  opacity: 0.3;
+}
+
+.playlist:hover .description {
+  opacity: 1;
+}
+
+.playlist p {
+  margin: 0;
+}

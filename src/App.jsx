@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RootLayout from "./layout/RootLayout";
 import LikedSongs from "./pages/likedSongs/likedSongs.jsx";
+import UserPlaylists from "./pages/userPlaylists/userPlaylists.jsx"
 import "./App.css";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
           {/* Here is for the main page <Route path="/" element={<Home />} /> */}
           <Route path="/" element={<LikedSongs />} />
           <Route path="/likedSongs" element={<LikedSongs />} />
+          <Route path="/userPlaylists" element={<UserPlaylists />} />
         </Route>
       </Routes>
     </Router>

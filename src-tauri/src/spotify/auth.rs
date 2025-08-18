@@ -8,10 +8,7 @@ pub async fn get_spotify() -> AuthCodeSpotify {
 
     let creds = Credentials::from_env().unwrap(); // Grabs ID and secret
 
-    let scopes = scopes!(
-        "user-library-read",
-        "playlist-read-private" // Not using this here
-    );
+    let scopes = scopes!("user-library-read", "playlist-read-private");
     let oauth = OAuth::from_env(scopes).unwrap(); // Applys scopes and looks for redirect url
 
     let mut path = PathBuf::from("../../Mars-Player-dl-Logic/");
